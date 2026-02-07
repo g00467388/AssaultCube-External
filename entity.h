@@ -2,7 +2,7 @@
 #include <windows.h>
 class Entity
 {
-private:
+protected:
 	HANDLE _gameHandle;
 	uintptr_t _playerBaseAddress;
 	
