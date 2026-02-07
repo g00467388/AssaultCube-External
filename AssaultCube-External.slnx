@@ -1,0 +1,7 @@
+<Solution>
+  <Configurations>
+    <Platform Name="x64" />
+    <Platform Name="x86" />
+  </Configurations>
+  <Project Path="../../../../../../source/repos/AssaultCube-External/AssaultCube-External.vcxproj" Id="a8864b60-cb4d-4b08-93d3-20a009528228" />
+</Solution>
