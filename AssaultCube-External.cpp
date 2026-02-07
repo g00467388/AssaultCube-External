@@ -1,8 +1,10 @@
 #include <iostream>
+#include <vector>
 #include <windows.h>
 #include <psapi.h>
 #include <thread>
 #include "offsets.h"
+#include "entity.h"
 
 #define ENTITY_COUNT 4
 
@@ -31,7 +33,9 @@ DWORD GetModuleBaseAddress(DWORD processID, const char* moduleName) {
 	return baseAddress;
 }
 
+
 int main() {
+	// TODO: dynamically obtain process ID
 	DWORD processID = 24252;
 	const char* moduleName = "ac_client.exe";
 
@@ -53,30 +57,37 @@ int main() {
 	}
 
 
-	uintptr_t buffer;
+	uintptr_t entitylist_buffer;
 
 	uintptr_t entityListBase = baseAddress + offsets::entityList;
 
-	ReadProcessMemory(gameHandle, (LPCVOID)entityListBase, &buffer, sizeof(buffer), nullptr);
+	ReadProcessMemory(gameHandle, (LPCVOID)entityListBase, &entitylist_buffer, sizeof(entitylist_buffer), nullptr);
 
-	if (buffer == 0)
+	if (entitylist_buffer == 0)
 		throw std::runtime_error("could not get entity list");
 
-	std::cout << "entitylistbase: " << buffer << "\n";
+	std::cout << "entitylistbase: " << entitylist_buffer << "\n";
 
-	uintptr_t localplayer_buffer;
-	float pitch_buffer{};
-	float pitch = 0.0f;
-	while (true)
-	{
+	std::vector<Entity> entities;
+	for (int i = 0; i < ENTITY_COUNT; i++) {
+		uint32_t entityBaseAddress32 = 0;
+		SIZE_T bytesRead = 0;
 
-		ReadProcessMemory(gameHandle, (LPCVOID)(baseAddress + offsets::localplayer), &localplayer_buffer, sizeof(localplayer_buffer), nullptr);
-		//std::cout << "localplayer buffer: " << localplayer_buffer << "\n";
-		ReadProcessMemory(gameHandle, (LPCVOID)(localplayer_buffer + offsets::pitch), &pitch_buffer, sizeof(pitch_buffer), nullptr);
-		std::cout << "\rpitch buffer: " << pitch_buffer;
-		WriteProcessMemory(gameHandle, (LPVOID)(localplayer_buffer + offsets::pitch), &pitch, sizeof(pitch_buffer), nullptr);
-		//std::cout << "pitch buffer: " << pitch_buffer << "\n";
-		std::this_thread::sleep_for(std::chrono::milliseconds(1));
+		if (!ReadProcessMemory(gameHandle, (LPCVOID)(entitylist_buffer + i * 0x4), &entityBaseAddress32, sizeof(entityBaseAddress32), &bytesRead) || bytesRead != sizeof(entityBaseAddress32)) {
+			std::cerr << "Failed to read entity pointer at index " << i << " (bytesRead=" << bytesRead << "), GetLastError=" << GetLastError() << "\n";
+			continue;
+		}
+		if (entityBaseAddress32 == 0)
+			continue;
+		uintptr_t entityBaseAddress = static_cast<uintptr_t>(entityBaseAddress32);
+		Entity entity(gameHandle, entityBaseAddress);
+		entities.push_back(entity);
+		std::cout << "Entity " << i << " base address: 0x" << std::hex << entityBaseAddress << std::dec << "\n";
+	}
+	std::cout << entities.size() << "\n";
+	for (int i = 0; i < entities.size() ; i++) {
+		std::cout << "Entity " << i << " health: " << entities[i].getHealth() << "\n";
+		std::cout << "Entity " << i << " position: (" << entities[i].getX() << ", " << entities[i].getY() << ", " << entities[i].getZ() << ")" << "\n\n";
 	}
 	CloseHandle(gameHandle);
 	return EXIT_SUCCESS;
