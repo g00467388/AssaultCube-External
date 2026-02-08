@@ -129,9 +129,11 @@
   <ItemGroup>
     <ClCompile Include="AssaultCube-External.cpp" />
     <ClCompile Include="entity.cpp" />
+    <ClCompile Include="mem.cpp" />
     <ClCompile Include="player.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="mem.h" />
     <ClInclude Include="offsets.h" />
     <ClInclude Include="entity.h" />
     <ClInclude Include="player.h" />

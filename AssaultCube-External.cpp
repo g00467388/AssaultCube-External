@@ -5,41 +5,15 @@
 #include <thread>
 #include "offsets.h"
 #include "entity.h"
+#include "mem.h"
 
 #define ENTITY_COUNT 4
 
-
-DWORD GetModuleBaseAddress(DWORD processID, const char* moduleName) {
-	DWORD baseAddress = 0;
-	HANDLE hProcess = OpenProcess(PROCESS_QUERY_INFORMATION | PROCESS_VM_READ, FALSE, processID);
-
-	if (hProcess) {
-		HMODULE hMods[1024];
-		DWORD cbNeeded;
-
-		if (EnumProcessModules(hProcess, hMods, sizeof(hMods), &cbNeeded)) {
-			for (unsigned int i = 0; i < (cbNeeded / sizeof(HMODULE)); i++) {
-				char szModName[MAX_PATH];
-				if (GetModuleFileNameEx(hProcess, hMods[i], szModName, sizeof(szModName) / sizeof(char))) {
-					if (strstr(szModName, moduleName) != nullptr) {
-						baseAddress = (DWORD)hMods[i];
-						break;
-					}
-				}
-			}
-		}
-		CloseHandle(hProcess);
-	}
-	return baseAddress;
-}
-
-
 int main() {
 	// TODO: dynamically obtain process ID
-	DWORD processID = 24252;
 	const char* moduleName = "ac_client.exe";
-
-	DWORD baseAddress = GetModuleBaseAddress(processID, moduleName);
+	uintptr_t pid = Mem::GetProcessID(moduleName);
+	DWORD baseAddress = Mem::GetModuleBaseAddress(pid, moduleName);
 	if (baseAddress != 0) {
 		std::cout << "Base address of " << moduleName << ": " << std::hex << baseAddress << std::endl;
 	}
@@ -50,7 +24,7 @@ int main() {
 
 	uintptr_t localplayer_address = baseAddress + offsets::localplayer;
 
-	HANDLE gameHandle = OpenProcess(PROCESS_VM_READ | PROCESS_VM_WRITE | PROCESS_VM_OPERATION, FALSE, processID);
+	HANDLE gameHandle = OpenProcess(PROCESS_VM_READ | PROCESS_VM_WRITE | PROCESS_VM_OPERATION, FALSE, pid);
 	if (gameHandle == NULL) {
 		std::cerr << "Could not open process." << std::endl;
 		return EXIT_FAILURE;
