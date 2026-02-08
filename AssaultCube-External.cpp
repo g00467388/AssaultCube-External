@@ -10,7 +10,6 @@
 #define ENTITY_COUNT 4
 
 int main() {
-	// TODO: dynamically obtain process ID
 	const char* moduleName = "ac_client.exe";
 	uintptr_t pid = Mem::GetProcessID(moduleName);
 	DWORD baseAddress = Mem::GetModuleBaseAddress(pid, moduleName);
