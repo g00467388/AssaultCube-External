@@ -6,6 +6,7 @@
 #include "offsets.h"
 #include "entity.h"
 #include "mem.h"
+#include "player.h"
 
 #define ENTITY_COUNT 4
 
@@ -30,7 +31,7 @@ int main() {
 	}
 
 
-	uintptr_t entitylist_buffer;
+		uintptr_t entitylist_buffer;
 
 	uintptr_t entityListBase = baseAddress + offsets::entityList;
 
@@ -38,7 +39,6 @@ int main() {
 
 	if (entitylist_buffer == 0)
 		throw std::runtime_error("could not get entity list");
-
 	std::cout << "entitylistbase: " << entitylist_buffer << "\n";
 
 	std::vector<Entity> entities;
@@ -57,13 +57,5 @@ int main() {
 		entities.push_back(entity);
 		std::cout << "Entity " << i << " base address: 0x" << std::hex << entityBaseAddress << std::dec << "\n";
 	}
-	std::cout << entities.size() << "\n";
-	for (int i = 0; i < entities.size() ; i++) {
-		std::cout << "Entity " << i << " health: " << entities[i].getHealth() << "\n";
-		std::cout << "Entity " << i << " position: (" << entities[i].getX() << ", " << entities[i].getY() << ", " << entities[i].getZ() << ")" << "\n\n";
+
 	}
-	CloseHandle(gameHandle);
-	return EXIT_SUCCESS;
-
-
-}

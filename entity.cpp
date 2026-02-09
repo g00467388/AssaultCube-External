@@ -2,7 +2,6 @@
 #include "offsets.h"
 #include "entity.h"
 
-Entity::Entity(HANDLE gamehandle, uintptr_t playerBaseAddress) : _gameHandle(gamehandle), _playerBaseAddress(playerBaseAddress) {}
 
 float& Entity::getX()  {
 	ReadProcessMemory(_gameHandle, (LPCVOID)(_playerBaseAddress + offsets::X), &_position.X, sizeof(_position.X), nullptr);
@@ -21,7 +20,7 @@ float& Entity::getZ() {
 	return _position.Z;
 }
 
-int Entity::getHealth() {
+uint32_t Entity::getHealth() {
 	ReadProcessMemory(_gameHandle, (LPCVOID)(_playerBaseAddress + offsets::health), &_health, sizeof(_health), nullptr);
 	return _health;
 }

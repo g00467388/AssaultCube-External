@@ -1,4 +1,5 @@
 #pragma once 
+#include <cstdint>
 #include <windows.h>
 class Entity
 {
@@ -6,7 +7,7 @@ protected:
 	HANDLE _gameHandle;
 	uintptr_t _playerBaseAddress;
 	
-	int _health;
+	uint32_t _health;
 
 	struct {
 		float X;
@@ -14,10 +15,10 @@ protected:
 		float Z;
 	} _position;
 public:
-	Entity(HANDLE gamehandle, uintptr_t playerBaseAddress);
+	Entity(HANDLE& gamehandle, uintptr_t playerBaseAddress);
 
 	// Getters for member variables
-	int getHealth();
+	uint32_t getHealth();
 
 	float& getX(); 
 	float& getY();

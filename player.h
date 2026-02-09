@@ -8,7 +8,10 @@ private:
 	float _pitch;
 	float& getYaw();
 	float& getPitch();
-
+	using Entity::Entity;
 public:
 	void aim(Entity& target);
+	void setX(float x);
+	void setY(float y);
+	void setZ(float z);
 };
