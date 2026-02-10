@@ -7,8 +7,15 @@
 #include "entity.h"
 #include "mem.h"
 #include "player.h"
+// Max players 32
+#define ENTITY_COUNT 32
 
-#define ENTITY_COUNT 4
+int32_t GetPlayerCount(HANDLE gameHandle, uintptr_t moduleBaseAddress)
+{
+	uint32_t count_buffer;
+	ReadProcessMemory(gameHandle, (LPCVOID)(moduleBaseAddress + offsets::playerCount), &count_buffer, sizeof(count_buffer), nullptr);
+	return count_buffer;
+}
 
 int main() {
 	const char* moduleName = "ac_client.exe";
@@ -31,7 +38,7 @@ int main() {
 	}
 
 
-		uintptr_t entitylist_buffer;
+	uintptr_t entitylist_buffer;
 
 	uintptr_t entityListBase = baseAddress + offsets::entityList;
 
@@ -57,5 +64,36 @@ int main() {
 		entities.push_back(entity);
 		std::cout << "Entity " << i << " base address: 0x" << std::hex << entityBaseAddress << std::dec << "\n";
 	}
+	std::cout << "entity count: " << entities.size() << "\n";
+
+
+
+
+	uintptr_t player_buff;
+
+	ReadProcessMemory(gameHandle, (LPCVOID)localplayer_address, &player_buff, sizeof(player_buff), nullptr);
+
+	std::cout << player_buff << "\n";
+	Player player(gameHandle, player_buff);
+	// X: X: 153.575, Y: 189.922, Z: -2.25
+	while (true)
+	{
+		for (int i = 0; i < GetPlayerCount(gameHandle, baseAddress); i++)
+		{
+			std::cout << "\rX: " << player.getX() << ", Y: " << player.getY() << ", Z: " << player.getZ() << "\n";
+
+			if (entities[i].getHealth() == 0)
+				continue;
+			player.setX(entities[i].getX());
+			player.setZ(entities[i].getZ());
+
+			player.setY(entities[i].getY());
+			player.aim(entities[i]);
+
+			std::this_thread::sleep_for(std::chrono::seconds(1));
+		}
+		
 
 	}
+	CloseHandle(gameHandle);
+}

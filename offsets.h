@@ -13,7 +13,7 @@ namespace offsets
 	static const uintptr_t Y = 0x8; //float 
 	static const uintptr_t Z = 0xC; //float 
 
-
+	
 
 	// Local player coordinates
 	static const uintptr_t Xchord = 0x28; //float 
@@ -25,4 +25,5 @@ namespace offsets
 	// Entity list only contains enemies (not local player)
 // Each entity if offset by 0x4 
 	static const uintptr_t entityList = 0x0018AC04; // uintptr_t
+	static const uintptr_t playerCount = 0x191FD4; // int32_t
 }
