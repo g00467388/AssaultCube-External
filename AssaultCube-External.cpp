@@ -7,10 +7,8 @@
 #include "entity.h"
 #include "mem.h"
 #include "player.h"
-// Max players 32
-#define ENTITY_COUNT 32
 
-int32_t GetPlayerCount(HANDLE gameHandle, uintptr_t moduleBaseAddress)
+int32_t GetEntityCount(HANDLE gameHandle, uintptr_t moduleBaseAddress)
 {
 	uint32_t count_buffer;
 	ReadProcessMemory(gameHandle, (LPCVOID)(moduleBaseAddress + offsets::playerCount), &count_buffer, sizeof(count_buffer), nullptr);
@@ -49,7 +47,8 @@ int main() {
 	std::cout << "entitylistbase: " << entitylist_buffer << "\n";
 
 	std::vector<Entity> entities;
-	for (int i = 0; i < ENTITY_COUNT; i++) {
+
+	for (int i = 0; i <= GetEntityCount(gameHandle, baseAddress); i++) {
 		uint32_t entityBaseAddress32 = 0;
 		SIZE_T bytesRead = 0;
 
@@ -75,25 +74,11 @@ int main() {
 
 	std::cout << player_buff << "\n";
 	Player player(gameHandle, player_buff);
-	// X: X: 153.575, Y: 189.922, Z: -2.25
-	while (true)
+	for (auto x : entities)
 	{
-		for (int i = 0; i < GetPlayerCount(gameHandle, baseAddress); i++)
-		{
-			std::cout << "\rX: " << player.getX() << ", Y: " << player.getY() << ", Z: " << player.getZ() << "\n";
-
-			if (entities[i].getHealth() == 0)
-				continue;
-			player.setX(entities[i].getX());
-			player.setZ(entities[i].getZ());
-
-			player.setY(entities[i].getY());
-			player.aim(entities[i]);
-
-			std::this_thread::sleep_for(std::chrono::seconds(1));
-		}
-		
-
+		std::cout << x.getHealth() << "\n";
 	}
+
+	player.killAll(entities);
 	CloseHandle(gameHandle);
 }

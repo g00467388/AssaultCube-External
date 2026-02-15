@@ -15,12 +15,11 @@ protected:
 		float Z;
 	} _position;
 public:
-	Entity(HANDLE& gamehandle, uintptr_t playerBaseAddress);
+    Entity(HANDLE& gamehandle, uintptr_t playerBaseAddress);
 
-	// Getters for member variables
-	uint32_t getHealth();
+    uint32_t getHealth();
 
-	float& getX(); 
-	float& getY();
-	float& getZ();
+    float& getX(); 
+    float& getY();
+    float& getZ();
 };
