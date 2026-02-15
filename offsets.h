@@ -1,9 +1,7 @@
 #include <cstdint>
 namespace offsets
 {
-	//	static const uintptr_t localplayer = 0x0017E254; // uintptr_t
 	static const uintptr_t localplayer = 0x0017E0A8; // uintptr_t
-	// localplayer: 7e12b8
 	static const uintptr_t health = 0xEC; // uint32_t
 	static const uintptr_t yaw = 0x34; //float
 	static const uintptr_t pitch = 0x38; //float
@@ -20,7 +18,7 @@ namespace offsets
 	static const uintptr_t Zchord = 0x30; //float 
 
 	// Entity list only contains enemies (not local player)
-	// Each entity if offset by 0x4 
+	// Each entity is offset by 0x4 
 	static const uintptr_t entityList = 0x0018AC04; // uintptr_t
 	static const uintptr_t playerCount = 0x191FD4; // int32_t
 }
