@@ -7,6 +7,7 @@ namespace offsets
 	static const uintptr_t health = 0xEC; // uint32_t
 	static const uintptr_t yaw = 0x34; //float
 	static const uintptr_t pitch = 0x38; //float
+	static const uintptr_t ammo = 0x140; //int32_t
 
 	// entity head coordinates
 	static const uintptr_t X = 0x4; //float
