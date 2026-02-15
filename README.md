@@ -3,6 +3,6 @@
 - Auto kill 
 - Unlimited ammo 
 
-(media/aimbot.gif)
+![aimbot example](https://github.com/g00467388/AssaultCube-External/blob/master/media/aimbot.gif?raw=true)
 
-[](media/autokill.gif)
+![auto kill example](https://github.com/g00467388/AssaultCube-External/blob/master/media/killall.gif?raw=true)
