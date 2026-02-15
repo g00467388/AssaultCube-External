@@ -24,7 +24,7 @@ namespace offsets
 
 
 	// Entity list only contains enemies (not local player)
-// Each entity if offset by 0x4 
+	// Each entity if offset by 0x4 
 	static const uintptr_t entityList = 0x0018AC04; // uintptr_t
 	static const uintptr_t playerCount = 0x191FD4; // int32_t
 }
