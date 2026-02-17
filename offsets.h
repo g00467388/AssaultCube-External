@@ -21,4 +21,6 @@ namespace offsets
 	// Each entity is offset by 0x4 
 	static const uintptr_t entityList = 0x0018AC04; // uintptr_t
 	static const uintptr_t playerCount = 0x191FD4; // int32_t
+	static const uintptr_t ViewMatrix = 0x57DFFC; // float
+
 }
