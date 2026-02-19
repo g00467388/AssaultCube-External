@@ -7,6 +7,7 @@
 #include "entity.h"
 #include "mem.h"
 #include "player.h"
+#include <algorithm>
 
 int32_t GetEntityCount(HANDLE gameHandle, uintptr_t moduleBaseAddress)
 {
@@ -74,11 +75,32 @@ int main() {
 
 	std::cout << player_buff << "\n";
 	Player player(gameHandle, player_buff);
-	for (auto x : entities)
-	{
-		std::cout << x.getHealth() << "\n";
-	}
+	int index = 0;
 
-	player.killAll(entities);
+
+    while (true)
+    {
+        if (entities.empty()) {
+            continue;
+        }
+
+        for (auto &e : entities) {	
+            e.calculateDistance(player);
+        }	
+
+		std::sort(entities.begin(), entities.end());
+		
+
+		if (entities[index].getHealth() <= 0 || entities[index].getHealth() > 100)
+			index++;
+		else if (entities[0].getHealth() > 0 && entities[0].getHealth() <= 100)	
+			index = 0;
+
+
+        player.aim(entities[index]);
+		player.setAmmo(1);
+        std::this_thread::sleep_for(std::chrono::milliseconds(1));
+    }
 	CloseHandle(gameHandle);
 }
+
