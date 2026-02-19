@@ -3,13 +3,12 @@
 
 #include <math.h>
 #include <windows.h>
+#include <thread>
 #include "player.h"
 #include "offsets.h"
-#include <thread>
-
-Entity::Entity(HANDLE& gameHandle, uintptr_t playerBaseAddress) : _gameHandle(gameHandle), _playerBaseAddress(playerBaseAddress) {}
 
 void Player::aim(Entity& target) {
+	
 	
 	// Normalize distance from target and player
 	float xDelta = target.getX() - this->getX();

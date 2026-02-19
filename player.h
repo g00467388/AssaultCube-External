@@ -8,7 +8,6 @@ private:
 	float _pitch;
 	int _ammo;
 	float& getYaw();
-
 	float& getPitch();
 	void setYaw(float yaw);
 	void setPitch(float pitch);
