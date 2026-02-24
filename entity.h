@@ -7,9 +7,9 @@ private:
 	double _distance;
 protected:
 	HANDLE _gameHandle;
-	uintptr_t _playerBaseAddress;
+	uintptr_t _baseAddress;
 	uint32_t _health;
-
+	bool _isVisible;
 	struct {
 		float X;
 		float Y;
@@ -26,6 +26,7 @@ public:
 	bool operator<(const Entity& other);
 	bool operator>(const Entity& other);
 	bool operator==(const Entity& other);
+	bool getVisible();
 	float getX() const;
 	float getY() const;
 	float getZ() const;

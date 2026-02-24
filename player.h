@@ -1,6 +1,8 @@
 #pragma once
 #include "entity.h"
 #include "vector"
+#include "vec.h"
+
 class Player : public Entity
 {
 private:
@@ -17,7 +19,7 @@ private:
 	using Entity::Entity;
 public:
 	void aim(Entity& target);
-
+	void moveTo(Vec3 location);
 	int32_t getAmmo();
 	void setAmmo(uint32_t amount);
 	void killAll(std::vector<Entity>& entities);
