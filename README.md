@@ -3,7 +3,7 @@
 1) Clone the repository via git or download the project as a .zip 
      - ```
 git clone https://github.com/g00467388/AssaultCube-External
-```
+``
 
 2) Open the **AssaultCube-External.sln** in Visual Studio 2022
 3) Set build mode from **Debug->Release** 
