@@ -8,6 +8,7 @@
 #include "mem.h"
 #include "player.h"
 #include <algorithm>
+#include <thread>
 
 int32_t GetEntityCount(HANDLE gameHandle, uintptr_t moduleBaseAddress)
 {
@@ -20,10 +21,8 @@ int main() {
 	const char* moduleName = "ac_client.exe";
 	uintptr_t pid = Mem::GetProcessID(moduleName);
 	DWORD baseAddress = Mem::GetModuleBaseAddress(pid, moduleName);
-	if (baseAddress != 0) {
-		std::cout << "Base address of " << moduleName << ": " << std::hex << baseAddress << std::endl;
-	}
-	else {
+	if (baseAddress == 0) 
+	{
 		std::cerr << "Failed to get the base address." << std::endl;
 		return EXIT_FAILURE;
 	}
@@ -45,7 +44,6 @@ int main() {
 
 	if (entitylist_buffer == 0)
 		throw std::runtime_error("could not get entity list");
-	std::cout << "entitylistbase: " << entitylist_buffer << "\n";
 
 	std::vector<Entity> entities;
 
@@ -62,7 +60,6 @@ int main() {
 		uintptr_t entityBaseAddress = static_cast<uintptr_t>(entityBaseAddress32);
 		Entity entity(gameHandle, entityBaseAddress);
 		entities.push_back(entity);
-		std::cout << "Entity " << i << " base address: 0x" << std::hex << entityBaseAddress << std::dec << "\n";
 	}
 	std::cout << "entity count: " << entities.size() << "\n";
 
@@ -73,34 +70,44 @@ int main() {
 
 	ReadProcessMemory(gameHandle, (LPCVOID)localplayer_address, &player_buff, sizeof(player_buff), nullptr);
 
-	std::cout << player_buff << "\n";
 	Player player(gameHandle, player_buff);
-	int index = 0;
+	bool unlimitedAmmoEnabled = false, aimbotEnabled = false, killAllEnabled = false;
 
+	aimbotEnabled 
+		? std::cout << "1) [enabled] Toggle aimbot: " << "\n"
+		: std::cout << "1) [disabled] Toggle aimbot: " << "\n";
 
-    while (true)
-    {
-        if (entities.empty()) {
-            continue;
-        }
+	unlimitedAmmoEnabled 
+		? std::cout << "2) [enabled] Increase ammo: " << "\n"
+		: std::cout << "2) [disabled] Increase ammo: " << "\n";
 
-        for (auto &e : entities) {	
-            e.calculateDistance(player);
-        }	
+	killAllEnabled 
+		? std::cout << "3) [enabled] Toggle kill all: " << "\n"
+		: std::cout << "3) [disabled] Toggle kill all: " << "\n";
+	
+	std::cout << "4) Exit\n";
+	int input;
 
-		std::sort(entities.begin(), entities.end());
-		
+	std::cin >> input;
 
-		if (entities[index].getHealth() <= 0 || entities[index].getHealth() > 100)
-			index++;
-		else if (entities[0].getHealth() > 0 && entities[0].getHealth() <= 100)	
-			index = 0;
-
-
-        player.aim(entities[index]);
-		player.setAmmo(1);
-        std::this_thread::sleep_for(std::chrono::milliseconds(1));
-    }
+	switch (input)
+	{
+	case 1:
+		player.startAimbot(entities);
+		break;
+		// ammo
+	case 2:
+		player.setAmmo(1337);
+		break;
+	case 3:
+		player.killAll(entities);
+		break;
+	case 4: 
+		CloseHandle(gameHandle);
+		return EXIT_SUCCESS;
+	}
+	
 	CloseHandle(gameHandle);
+	return EXIT_FAILURE;
 }
 

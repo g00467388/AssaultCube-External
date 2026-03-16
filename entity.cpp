@@ -3,7 +3,7 @@
 #include "entity.h"
 #include "vec.h"
 
-Entity::Entity(HANDLE& gameHandle, uintptr_t playerBaseAddress) : _gameHandle(gameHandle), _baseAddress(playerBaseAddress) {}
+Entity::Entity(HANDLE& gameHandle, uintptr_t playerBaseAddress) : _gameHandle(gameHandle), _baseAddress(playerBaseAddress), _health(0) {}
 
 float Entity::getX() const {
 	ReadProcessMemory(_gameHandle, (LPCVOID)(_baseAddress + offsets::X), (void*)&_position.X, sizeof(_position.X), nullptr);
@@ -37,8 +37,8 @@ void Entity::calculateDistance(Entity& localplayer) {
 
 bool Entity::getVisible()
 {
-	ReadProcessMemory(_gameHandle, (LPCVOID)(_baseAddress + offsets::IsVisible), &_isVisible, sizeof(_isVisible), nullptr);
-	return _isVisible;
+	ReadProcessMemory(_gameHandle, (LPCVOID)(offsets::IsVisible), &_isVisible, sizeof(_isVisible), nullptr);
+	return _isVisible > 10000;
 }
 
 bool Entity::operator<(const Entity& other)
