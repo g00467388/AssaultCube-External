@@ -1,7 +1,7 @@
 #pragma once 
 #include <cstdint>
 #include <windows.h>
-class Entity 
+class Entity
 {
 private:
 	double _distance;
@@ -9,7 +9,7 @@ protected:
 	HANDLE _gameHandle;
 	uintptr_t _baseAddress;
 	uint32_t _health;
-	uint32_t _isVisible;
+	bool _isVisible;
 	struct {
 		float X;
 		float Y;

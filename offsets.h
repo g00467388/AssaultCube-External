@@ -12,7 +12,7 @@ namespace offsets
 	static const uintptr_t Y = 0x8; //float 
 	static const uintptr_t Z = 0xC; //float 
 	//static const uintptr_t IsVisible = 0x3F9; // bool
-	static const uintptr_t IsVisible = 0x0C25CCD8; // uint32_t
+	static const uintptr_t IsVisible = 0x3B; // bool
 
 	// Local player coordinates
 	static const uintptr_t Xchord = 0x28; //float 
