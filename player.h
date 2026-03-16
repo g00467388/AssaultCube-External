@@ -9,6 +9,8 @@ private:
 	float _yaw;
 	float _pitch;
 	int _ammo;
+
+	
 	float& getYaw();
 	float& getPitch();
 	void setYaw(float yaw);
@@ -19,7 +21,8 @@ private:
 	using Entity::Entity;
 public:
 	void aim(Entity& target);
-	void moveTo(Vec3 location);
+	void startAimbot(std::vector<Entity>& target);
+	void moveTo(Entity& location);
 	int32_t getAmmo();
 	void setAmmo(uint32_t amount);
 	void killAll(std::vector<Entity>& entities);

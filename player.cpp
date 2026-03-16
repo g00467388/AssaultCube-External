@@ -1,12 +1,15 @@
+#include <iostream>
 #include <cmath>
 #define _USE_MATH_DEFINES
 
 #include <math.h>
 #include <windows.h>
 #include <thread>
+#include <algorithm>
 #include "player.h"
 #include "offsets.h"
 
+// TODO: Convert math from float to doubles
 void Player::aim(Entity& target) {
 	// Normalize distance from target and player
 	float xDelta = target.getX() - this->getX();
@@ -22,6 +25,7 @@ void Player::aim(Entity& target) {
 	this->setYaw(yaw);
 	this->setPitch(pitch);
 }
+
 
 float& Player::getYaw() {
 	ReadProcessMemory(_gameHandle, (LPCVOID)(_baseAddress + offsets::yaw), &_yaw, sizeof(_yaw), nullptr);
@@ -57,11 +61,11 @@ void Player::setPitch(float pitch)
 	WriteProcessMemory(_gameHandle, (LPVOID)(_baseAddress + offsets::pitch), &pitch, sizeof(pitch), nullptr);
 }
 
-void Player::moveTo(Vec3 location)
+void Player::moveTo(Entity& entity)
 {
-	this->setX(location.x);
-	this->setY(location.y);
-	this->setZ(location.z);
+	this->setX(entity.getX());
+	this->setY(entity.getY());
+	this->setZ(entity.getZ());
 }
 
 int32_t Player::getAmmo()
@@ -75,11 +79,37 @@ void Player::setAmmo(uint32_t amount)
 	WriteProcessMemory(_gameHandle, (LPVOID)(_baseAddress + offsets::ammo), &amount, sizeof(amount), nullptr);
 }
 
+void Player::startAimbot(std::vector<Entity>& entities)
+{
+	int index = 0;
+	while (true)
+	{
+		index = 0;
+		if (entities.empty()) {
+			continue;
+		}
+
+		for (auto& e : entities) {
+			e.calculateDistance(*this);
+		}
+		std::sort(entities.begin(), entities.end());
+
+
+		if (entities[index].getHealth() <= 0 || entities[index].getHealth() > 100)
+		{
+			index++;
+			continue;
+		}
+
+		this->aim(entities[index]);
+	}
+}
+
 void Player::killAll(std::vector<Entity>& entities)
 {
 	while (true)
 	{
-		for (int i = 0; i < entities.size() - 1; i++)
+		for (int i = 0; i < entities.size(); i++)
 		{
 			while (entities[i].getHealth() > 0)
 			{
@@ -90,9 +120,7 @@ void Player::killAll(std::vector<Entity>& entities)
 				if (entities[i].getHealth() > 100)
 					break;
 
-				this->setX(entities[i].getX());
-				this->setY(entities[i].getY());
-				this->setZ(entities[i].getZ());
+				this->moveTo(entities[i]);
 				this->aim(entities[i]);
 
 				std::this_thread::sleep_for(std::chrono::milliseconds(1));
